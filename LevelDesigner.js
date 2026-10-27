@@ -1,5 +1,5 @@
 import * as LJS from 'littlejsengine'
-import { Objects } from './Objects';
+import { Objects } from './Objects.js';
 
 
 
