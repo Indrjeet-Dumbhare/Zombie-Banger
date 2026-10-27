@@ -2,9 +2,12 @@ import * as LJS from 'littlejsengine';
 import { Objects} from './Objects';
 
 
-let RayDists=[];
+let RayDists=new Map();
 
-function rayRecHit(start,end,rect){
+// Idk how this shit turly works but this function calculates the normal from the coming ray from start to end 
+// based on that it evaluates the normal dir and the point the ray hits.
+// currently the ray hits on the main window and not the added objects this can be solved later.
+function rayRecHit(start,dir,rect){
     const halfX = rect.size.x / 2;
     const halfY = rect.size.y / 2;
 
@@ -13,16 +16,16 @@ function rayRecHit(start,end,rect){
     const minY = rect.pos.y - halfY;
     const maxY = rect.pos.y + halfY;
 
-    const dx = end.x - start.x;
-    const dy = end.y - start.y;
+    // const dx = end.x - start.x;
+    // const dy = end.y - start.y;
 
     let tMin = 0;
     let tMax = 1;
     let normal = null;
 
     for (const [origin, direction, min, max, negNormal, posNormal] of [
-        [start.x, dx, minX, maxX, LJS.vec2(-1, 0), LJS.vec2(1, 0)],
-        [start.y, dy, minY, maxY, LJS.vec2(0, -1), LJS.vec2(0, 1)]
+        [start.x, dir.x, minX, maxX, LJS.vec2(-1, 0), LJS.vec2(1, 0)],
+        [start.y, dir.y, minY, maxY, LJS.vec2(0, -1), LJS.vec2(0, 1)]
     ]) {
         if (Math.abs(direction) < 1e-8) {
             if (origin < min || origin > max) return null;
@@ -46,37 +49,44 @@ function rayRecHit(start,end,rect){
     }
     if (tMin < 0 || tMin > 1) return null;
 
-
     return {
-        point: LJS.vec2(start.x + dx * tMin, start.y + dy * tMin),
+        point: LJS.vec2(start.x + dir.x * tMin, start.y + dir.y * tMin),
         normal
     };
 }
-
-/*
-* @param {Vector2} start
-* @param {Vector2} end
-* @memberof  */
-function CalculatePath(start,end,n_bounces) {
-    if(n_bounces == 0) return;
+let index  =0 ;
+function CalculatePath(start,dir,n_bounces) {
+    if(n_bounces == 0) {index = 0; return;}
     for (const rect of Objects) {
-        const hits = rayRecHit(start,end,rect);
+        const hits = rayRecHit(start,dir,rect);
 
         if (hits && hits.normal) {
 
             // Vr = V - 2(V.N)N
-            const direction = end.subtract(start);
+            const direction = dir;
             const reflected = direction.subtract(hits.normal.scale(2*direction.dot(hits.normal)));
             const new_end = hits.point.add(reflected);
-            if((start && end && new_end)){
-                RayDists.push({start: LJS.vec2(end.x, end.y),end: LJS.vec2(new_end.x, new_end.y)});
-            }
 
-            CalculatePath(end,new_end,n_bounces - 1);
+            if((start && hits.point && new_end)){
+                // RayDists.push({start: hits.point,end: new_end});
+                console.log(index);
+
+                RayDists.set(index,{start:start,end: hits.point});
+                index++;
+
+                RayDists.set(index,{start: hits.point,end: new_end});
+                
+            }
+            console.log("/n");
+            CalculatePath(hits.point,new_end.subtract(hits.point),n_bounces - 1);
+            break;  
         }
     }
     
 }
+
+
+
 
 
 
@@ -102,12 +112,11 @@ export class PlayerClass extends LJS.EngineObject{
 
 
         if(this.pos && this.mousePosLoc){
-            RayDists.push({start: this.pos,end: this.mousePosLoc});
+            // RayDists.push({start: this.pos,end: this.mousePosLoc.subtract(this.pos)});
+            RayDists.set(index,{start: this.pos,end: this.mousePosLoc.subtract(this.pos)});
         }
-
-        CalculatePath(this.pos,this.mousePosLoc,3);
-
-
+        //Repalce the 3 with threshold val
+        CalculatePath(this.pos,this.mousePosLoc.subtract(this.pos),3);
 
     }
 
@@ -117,13 +126,11 @@ export class PlayerClass extends LJS.EngineObject{
         
         // LJS.drawLine(this.playerStartPos,this.mousePosLoc,1,LJS.RED);
         RayDists.forEach(element => {
-                console.log("Start:", element.start);
-                console.log("End:", element.end);
                 LJS.drawLine(element.start,element.end,1,LJS.RED);
         });
         
 
-        RayDists.length = 0;
+        RayDists.clear();
     }
     
 }

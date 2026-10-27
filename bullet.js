@@ -3,8 +3,6 @@ import * as LJS from 'littlejsengine';
 
 
 
-
-
 export class BulletClass extends LJS.EngineObject{
 
     mouse_pos = LJS.vec2(0,0);

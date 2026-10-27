@@ -35,17 +35,13 @@ export class LevelDesigner extends LJS.EngineObject{
         width = size.x;
         height = size.y;
 
-        console.log({
-            width : width,
-            height:height ,
-            minX: this.minX,
-            minY: this.minY
-        });
         // for now we will spawn obstacles around of size 10 from the edge the screen
-        this.addObject(new Rectangle(LJS.vec2(this.minX,0),LJS.vec2(10,height)));
-        this.addObject(new Rectangle(LJS.vec2(this.maxX,0),LJS.vec2(10,height)));
-        this.addObject(new Rectangle(LJS.vec2(0,this.minY),LJS.vec2(width,10)));
-        this.addObject(new Rectangle(LJS.vec2(0,this.maxY),LJS.vec2(width,10)));
+        this.addObject(new Rectangle(LJS.vec2(this.minX,0),LJS.vec2(1,height)));
+        this.addObject(new Rectangle(LJS.vec2(this.maxX,0),LJS.vec2(1,height)));
+        this.addObject(new Rectangle(LJS.vec2(0,this.minY),LJS.vec2(width,1)));
+        this.addObject(new Rectangle(LJS.vec2(0,this.maxY),LJS.vec2(width,1)));
+
+        this.addObject(new Rectangle(LJS.vec2(20,20),LJS.vec2(5,5)));
     }
 
     update(){
