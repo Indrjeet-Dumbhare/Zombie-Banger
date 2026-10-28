@@ -10,6 +10,8 @@ let RayDists = new Map();
 // We swap the two maps after calculating the path.
 let NextRayDists = new Map();
 
+// Custom boolean as little js doesnt register click outside canvas.
+let mouseWasPressed = false;
 
 // Finds where a ray hits a rectangle.
 // start    = starting position of the ray
@@ -347,6 +349,11 @@ export class PlayerClass extends LJS.EngineObject {
 
     update() {
 
+        document.body.addEventListener('click', function() {
+            mouseWasPressed = true; 
+        });
+
+
         // Clear the Map that will contain the newly calculated
         // ray path for this frame.
         NextRayDists.clear();
@@ -385,8 +392,12 @@ export class PlayerClass extends LJS.EngineObject {
         // The old render Map becomes the temporary Map.
         [RayDists, NextRayDists] = [NextRayDists, RayDists];
 
-        if (LJS.mouseWasPressed(0)) {
+
+        if (mouseWasPressed) {
+            
             this.fireBullet();
+            // console.log("Pressed");
+            mouseWasPressed = false;
         }
     }
 
