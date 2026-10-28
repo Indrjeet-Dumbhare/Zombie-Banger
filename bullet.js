@@ -1,6 +1,6 @@
 import * as LJS from 'littlejsengine';
 import { Objects } from './Objects.js';
-import { rayRecHit } from './player.js'; // Adjust the filename
+import { rayRecHit } from './player.js'; 
 
 // CHANGED: set to true to log every bounce in the browser console.
 const DEBUG_BULLETS = true;
@@ -12,7 +12,7 @@ export class BulletClass extends LJS.EngineObject {
 
     // Bullet configuration.
     doesPierce = false;
-    bulletBounceThreshold = 3;
+    bulletBounceThreshold = 2;
     bouncesHappened = 0;
 
     // CHANGED: was 400. The level is now in tile units (map is 25 x 15 units),
