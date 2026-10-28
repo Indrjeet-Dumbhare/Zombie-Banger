@@ -1,6 +1,6 @@
 import * as LJS from 'littlejsengine';
 import { Objects } from './Objects.js';
-import { rayRecHit } from './player.js'; // Adjust the filename
+import { rayRecHit } from './player.js'; 
 
 export class BulletClass extends LJS.EngineObject {
 
@@ -9,7 +9,7 @@ export class BulletClass extends LJS.EngineObject {
 
     // Bullet configuration.
     doesPierce = false;
-    bulletBounceThreshold = 3;
+    bulletBounceThreshold = 2;
     bouncesHappened = 0;
     bulletVelocity = 400; // Units per second
 
