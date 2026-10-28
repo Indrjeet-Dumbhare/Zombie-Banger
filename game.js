@@ -1,8 +1,8 @@
 
 import * as LJS from 'littlejsengine';
-import { PlayerClass } from './player';
-import { BulletClass } from './bullet';
-import { LevelDesigner } from './LevelDesigner';
+import { PlayerClass } from './player.js';
+import { BulletClass } from './bullet.js';
+import { LevelDesigner } from './LevelDesigner.js';
 const { x: width, y: height } = LJS.getCameraSize();
 
 
